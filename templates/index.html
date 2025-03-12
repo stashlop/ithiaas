@@ -1,0 +1,477 @@
+{% extends "base.html" %}
+{% block title %}Itihasa - Monumental Journeys{% endblock %}
+{% block content %}
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+body{
+    background-color: #5c55558a;
+    color: #eee;
+    font-family: Poppins;
+    font-size: 12px;
+}
+
+/* carousel */
+.carousel{
+    height: 100vh;
+    width: 100vw;
+    overflow: hidden;
+    position: relative;
+    margin-top: 0;
+    padding-top: 80px;
+}
+.carousel .list .item{
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    inset: 0 0 0 0;
+}
+.carousel .list .item img{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.carousel .list .item .content{
+    position: absolute;
+    top: 20%;
+    width: 1140px;
+    max-width: 80%;
+    left: 50%;
+    transform: translateX(-50%);
+    padding-right: 30%;
+    box-sizing: border-box;
+    color: #fff;
+    text-shadow: 0 5px 10px #0004;
+}
+.carousel .list .item .author{
+    font-weight: bold;
+    letter-spacing: 10px;
+}
+.carousel .list .item .title,
+.carousel .list .item .topic{
+    font-size: 5em;
+    font-weight: bold;
+    line-height: 1.3em;
+}
+.carousel .list .item .topic{
+    color: #f1683a;
+}
+.carousel .list .item .buttons{
+    display: grid;
+    grid-template-columns: repeat(2, 130px);
+    grid-template-rows: 40px;
+    gap: 5px;
+    margin-top: 20px;
+}
+.carousel .list .item .buttons button{
+    border: none;
+    background-color: #eee;
+    letter-spacing: 3px;
+    font-family: Poppins;
+    font-weight: 500;
+    cursor: pointer;
+}
+.carousel .list .item .buttons button:nth-child(2){
+    background-color: transparent;
+    border: 1px solid #fff;
+    color: #eee;
+    text-decoration: none;
+}
+
+/* thumbnail */
+.thumbnail{
+    position: absolute;
+    bottom: 50px;
+    left: 50%;
+    width: max-content;
+    z-index: 100;
+    display: flex;
+    gap: 20px;
+    transform: translateX(-50%);
+}
+.thumbnail .item{
+    width: 150px;
+    height: 220px;
+    flex-shrink: 0;
+    position: relative;
+}
+.thumbnail .item img{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 20px;
+}
+.thumbnail .item .content{
+    color: #fff;
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    right: 10px;
+}
+.thumbnail .item .content .title{
+    font-weight: 500;
+    font-size: 16px;
+}
+.thumbnail .item .content .description{
+    font-weight: 300;
+}
+
+/* arrows */
+.arrows{
+    position: absolute;
+    bottom: 50%;
+    width: 100%;
+    z-index: 100;
+    display: flex;
+    justify-content: space-between;
+    padding: 0 20px;
+    box-sizing: border-box;
+}
+.arrows button{
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background-color: rgba(0, 0, 0, 0.5);
+    border: none;
+    color: #ffffff;
+    font-family: monospace;
+    font-weight: bold;
+    transition: .5s;
+    cursor: pointer;
+}
+.arrows button:hover{
+    background-color: rgba(255, 255, 255, 0.8);
+    color: #000000;
+}
+
+/* animation */
+.carousel .list .item:nth-child(1){
+    z-index: 1;
+}
+
+/* animation text */
+.carousel .list .item:nth-child(1) .content .author,
+.carousel .list .item:nth-child(1) .content .title,
+.carousel .list .item:nth-child(1) .content .topic,
+.carousel .list .item:nth-child(1) .content .des,
+.carousel .list .item:nth-child(1) .content .buttons{
+    transform: translateY(50px);
+    filter: blur(20px);
+    opacity: 0;
+    animation: showContent .5s 1s linear 1 forwards;
+}
+
+@keyframes showContent{
+    to{
+        transform: translateY(0px);
+        filter: blur(0px);
+        opacity: 1;
+    }
+}
+
+/* Animation delays */
+.carousel .list .item:nth-child(1) .content .title{
+    animation-delay: 1.2s!important;
+}
+.carousel .list .item:nth-child(1) .content .topic{
+    animation-delay: 1.4s!important;
+}
+.carousel .list .item:nth-child(1) .content .des{
+    animation-delay: 1.6s!important;
+}
+.carousel .list .item:nth-child(1) .content .buttons{
+    animation-delay: 1.8s!important;
+}
+
+/* Time running */
+.carousel .time{
+    position: absolute;
+    z-index: 1000;
+    width: 0%;
+    height: 3px;
+    background-color: #f1683a;
+    left: 0;
+    top: 0;
+}
+
+.carousel.next .time,
+.carousel.prev .time{
+    animation: runningTime 3s linear 1 forwards;
+}
+
+@keyframes runningTime{
+    from{ width: 100%}
+    to{width: 0}
+}
+
+
+</style>
+
+<div class="carousel">
+    <div class="list">
+        <div class="item">
+            <img src="{{ url_for('static', filename='taj1.jpg') }}">
+            <div class="content">
+                <div class="author">ITIHAAS</div>
+                <div class="title">TAJ MAHAL</div>
+                <div class="topic">AGRA</div>
+                <div class="des">The Taj Mahal is an ivory-white marble mausoleum on the right bank of the river Yamuna in Agra, India. It was commissioned in 1632 by the Mughal emperor Shah Jahan to house the tomb of his favourite wife, Mumtaz Mahal.</div>
+                <div class="buttons">
+                    <button>EXPLORE</button>
+                    <a href="{{ url_for('views.booking') }}"><button type="button">BOOK NOW</button></a>
+                </div>
+            </div>
+        </div>
+        <div class="item">
+            <img src="{{ url_for('static', filename='Lotus.jpg') }}">
+            <div class="content">
+                <div class="author">ITIHAAS</div>
+                <div class="title">LOTUS TEMPLE</div>
+                <div class="topic">MADHYA PRADESH</div>
+                <div class="des">The Khajuraho Group of Monuments are a group of Hindu and Jain temples in Madhya Pradesh, India. They are famous for their nagara-style architectural symbolism and erotic sculptures.</div>
+                <div class="buttons">
+                    <button>EXPLORE</button>
+                    <a href="{{ url_for('views.booking') }}"><button type="button">BOOK NOW</button></a>
+                </div>
+            </div>
+        </div>
+        <div class="item">
+            <img src="{{ url_for('static', filename='hampi1.jpg') }}">
+            <div class="content">
+                <div class="author">ITIHAAS</div>
+                <div class="title">HAMPI</div>
+                <div class="topic">KARNATAKA</div>
+                <div class="des">Hampi was the capital of the Vijayanagara Empire in the 14th century. The ruins of Hampi represent the culmination of the highest point of art in the kingdom as represented by its architecture and sculpture.</div>
+                <div class="buttons">
+                    <button>EXPLORE</button>
+                    <a href="{{ url_for('views.booking') }}"><button type="button">BOOK NOW</button></a>
+                </div>
+            </div>
+        </div>
+        <div class="item">
+            <img src="{{ url_for('static', filename='ellora.jpg') }}">
+            <div class="content">
+                <div class="author">ITIHAAS</div>
+                <div class="title">ELLORA CAVES</div>
+                <div class="topic">MAHARASHTRA</div>
+                <div class="des">The Ellora Caves are a UNESCO World Heritage Site featuring rock-cut temples of Hindu, Buddhist, and Jain origins, showcasing incredible artistry and engineering skills.</div>
+                <div class="buttons">
+                    <button>EXPLORE</button>
+                    <a href="{{ url_for('views.booking') }}"><button type="button">BOOK NOW</button></a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="item">
+        <img src="{{ url_for('static', filename='taj1.jpg') }}">
+        <div class="content">
+            <div class="author">ITIHAAS</div>
+            <div class="title">TAJ MAHAL</div>
+            <div class="topic">AGRA</div>
+            <div class="des">The Taj Mahal is an ivory-white marble mausoleum on the right bank of the river Yamuna in Agra, India. It was commissioned in 1632 by the Mughal emperor Shah Jahan to house the tomb of his favourite wife, Mumtaz Mahal.</div>
+            <div class="buttons">
+                <button>EXPLORE</button>
+                <a href="{{ url_for('views.booking') }}"><button type="button">BOOK NOW</button></a>
+            </div>
+        </div>
+    </div>
+    <div class="item">
+        <img src="{{ url_for('static', filename='taj1.jpg') }}">
+        <div class="content">
+            <div class="author">ITIHAAS</div>
+            <div class="title">TAJ MAHAL</div>
+            <div class="topic">AGRA</div>
+            <div class="des">The Taj Mahal is an ivory-white marble mausoleum on the right bank of the river Yamuna in Agra, India. It was commissioned in 1632 by the Mughal emperor Shah Jahan to house the tomb of his favourite wife, Mumtaz Mahal.</div>
+            <div class="buttons">
+                <button>EXPLORE</button>
+                <a href="{{ url_for('views.booking') }}"><button type="button">BOOK NOW</button></a>
+            </div>
+        </div>
+    </div>
+    <div class="item">
+        <img src="{{ url_for('static', filename='taj1.jpg') }}">
+        <div class="content">
+            <div class="author">ITIHAAS</div>
+            <div class="title">TAJ MAHAL</div>
+            <div class="topic">AGRA</div>
+            <div class="des">The Taj Mahal is an ivory-white marble mausoleum on the right bank of the river Yamuna in Agra, India. It was commissioned in 1632 by the Mughal emperor Shah Jahan to house the tomb of his favourite wife, Mumtaz Mahal.</div>
+            <div class="buttons">
+                <button>EXPLORE</button>
+                <a href="{{ url_for('views.booking') }}"><button type="button">BOOK NOW</button></a>
+            </div>
+        </div>
+    </div>
+    <div class="item">
+        <img src="{{ url_for('static', filename='taj1.jpg') }}">
+        <div class="content">
+            <div class="author">ITIHAAS</div>
+            <div class="title">TAJ MAHAL</div>
+            <div class="topic">AGRA</div>
+            <div class="des">The Taj Mahal is an ivory-white marble mausoleum on the right bank of the river Yamuna in Agra, India. It was commissioned in 1632 by the Mughal emperor Shah Jahan to house the tomb of his favourite wife, Mumtaz Mahal.</div>
+            <div class="buttons">
+                <button>EXPLORE</button>
+                <a href="{{ url_for('views.booking') }}"><button type="button">BOOK NOW</button></a>
+            </div>
+        </div>
+    </div>
+    <div class="item">
+        <img src="{{ url_for('static', filename='taj1.jpg') }}">
+        <div class="content">
+            <div class="author">ITIHAAS</div>
+            <div class="title">TAJ MAHAL</div>
+            <div class="topic">AGRA</div>
+            <div class="des">The Taj Mahal is an ivory-white marble mausoleum on the right bank of the river Yamuna in Agra, India. It was commissioned in 1632 by the Mughal emperor Shah Jahan to house the tomb of his favourite wife, Mumtaz Mahal.</div>
+            <div class="buttons">
+                <button>EXPLORE</button>
+                <a href="{{ url_for('views.booking') }}"><button type="button">BOOK NOW</button></a>
+            </div>
+        </div>
+    </div>
+    <div class="item">
+        <img src="{{ url_for('static', filename='taj1.jpg') }}">
+        <div class="content">
+            <div class="author">ITIHAAS</div>
+            <div class="title">TAJ MAHAL</div>
+            <div class="topic">AGRA</div>
+            <div class="des">The Taj Mahal is an ivory-white marble mausoleum on the right bank of the river Yamuna in Agra, India. It was commissioned in 1632 by the Mughal emperor Shah Jahan to house the tomb of his favourite wife, Mumtaz Mahal.</div>
+            <div class="buttons">
+                <button>EXPLORE</button>
+                <a href="{{ url_for('views.booking') }}"><button type="button">BOOK NOW</button></a>
+            </div>
+        </div>
+    </div>
+    <div class="thumbnail">
+        <div class="item">
+            <img src="{{ url_for('static', filename='taj1.jpg') }}">
+            <div class="content">
+                <div class="title">Taj Mahal</div>
+                <div class="description">Symbol of Love</div>
+            </div>
+        </div>
+        <div class="item">
+            <img src="{{ url_for('static', filename='kajuraho1.jpg') }}">
+            <div class="content">
+                <div class="title">Khajuraho Temples</div>
+                <div class="description">Architectural Marvel</div>
+            </div>
+        </div>
+        <div class="item">
+            <img src="{{ url_for('static', filename='hampi1.jpg') }}">
+            <div class="content">
+                <div class="title">Hampi Ruins</div>
+                <div class="description">Ancient Kingdom</div>
+            </div>
+        </div>
+        <div class="item">
+            <img src="{{ url_for('static', filename='ellora.jpg') }}">
+            <div class="content">
+                <div class="title">Ellora Caves</div>
+                <div class="description">Cultural Heritage</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="thumbnail">
+        <div class="item">
+            <img src="{{ url_for('static', filename='taj1.jpg') }}">
+            <div class="content">
+                <div class="title">Taj Mahal</div>
+                <div class="description">Symbol of Love</div>
+            </div>
+        </div>
+        <div class="item">
+            <img src="{{ url_for('static', filename='kajuraho.jpg') }}">
+            <div class="content">
+                <div class="title">Khajuraho Temples</div>
+                <div class="description">Architectural Marvel</div>
+            </div>
+        </div>
+        <div class="item">
+            <img src="{{ url_for('static', filename='hampi1.jpg') }}">
+            <div class="content">
+                <div class="title">Hampi Ruins</div>
+                <div class="description">Ancient Kingdom</div>
+            </div>
+        </div>
+        <div class="item">
+            <img src="{{ url_for('static', filename='ellora.jpg') }}">
+            <div class="content">
+                <div class="title">Ellora Caves</div>
+                <div class="description">Cultural Heritage</div>
+            </div>
+        </div>
+    </div>
+    <div class="item">
+        <img src="{{ url_for('static', filename='hampi1.jpg') }}">
+        <div class="content">
+            <div class="title">Hampi Ruins</div>
+            <div class="description">Ancient Kingdom</div>
+        </div>
+    </div>
+    <div class="item">
+        <img src="{{ url_for('static', filename='ellora.jpg') }}">
+        <div class="content">
+            <div class="title">Ellora Caves</div>
+            <div class="description">Cultural Heritage</div>
+        </div>
+    </div>
+</div>
+    <div class="arrows">
+        <button id="prev"><</button>
+        <button id="next">></button>
+    </div>
+    <div class="time"></div>
+</div>
+
+<script>
+let nextDom = document.getElementById('next');
+let prevDom = document.getElementById('prev');
+let carouselDom = document.querySelector('.carousel');
+let SliderDom = carouselDom.querySelector('.carousel .list');
+let thumbnailBorderDom = document.querySelector('.carousel .thumbnail');
+let thumbnailItemsDom = thumbnailBorderDom.querySelectorAll('.item');
+let timeDom = document.querySelector('.carousel .time');
+
+thumbnailBorderDom.appendChild(thumbnailItemsDom[0]);
+let timeRunning = 3000;
+let timeAutoNext = 7000;
+
+nextDom.onclick = function(){
+    showSlider('next');    
+}
+
+prevDom.onclick = function(){
+    showSlider('prev');    
+}
+
+let runTimeOut;
+let runNextAuto = setTimeout(() => {
+    nextDom.click();
+}, timeAutoNext);
+
+function showSlider(type){
+    let SliderItemsDom = SliderDom.querySelectorAll('.carousel .list .item');
+    let thumbnailItemsDom = document.querySelectorAll('.carousel .thumbnail .item');
+    
+    if(type === 'next'){
+        SliderDom.appendChild(SliderItemsDom[0]);
+        thumbnailBorderDom.appendChild(thumbnailItemsDom[0]);
+        carouselDom.classList.add('next');
+    }else{
+        SliderDom.prepend(SliderItemsDom[SliderItemsDom.length - 1]);
+        thumbnailBorderDom.prepend(thumbnailItemsDom[thumbnailItemsDom.length - 1]);
+        carouselDom.classList.add('prev');
+    }
+    
+    clearTimeout(runTimeOut);
+    runTimeOut = setTimeout(() => {
+        carouselDom.classList.remove('next');
+        carouselDom.classList.remove('prev');
+    }, timeRunning);
+
+    clearTimeout(runNextAuto);
+    runNextAuto = setTimeout(() => {
+        nextDom.click();
+    }, timeAutoNext);
+}
+</script>
+{% endblock %}

@@ -1,0 +1,149 @@
+{% extends "base.html" %}
+{% block title %}Booking History - Itihasa{% endblock %}
+{% block content %}
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+    .history-container {
+        max-width: 1000px;
+        margin: 40px auto;
+        padding: 20px;
+        font-family: 'Poppins', sans-serif;
+    }
+
+    .history-title {
+        text-align: center;
+        color: #f1683a;
+        font-size: 2.5em;
+        margin-bottom: 30px;
+    }
+
+    .booking-cards {
+        display: grid;
+        gap: 20px;
+    }
+
+    .booking-card {
+        background: rgba(255, 255, 255, 0.9);
+        border-radius: 15px;
+        padding: 20px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .booking-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 15px;
+        padding-bottom: 10px;
+        border-bottom: 2px solid #f1683a;
+    }
+
+    .monument-name {
+        font-size: 1.5em;
+        font-weight: 600;
+        color: #333;
+    }
+
+    .booking-status {
+        padding: 5px 15px;
+        border-radius: 20px;
+        font-weight: 500;
+        font-size: 0.9em;
+    }
+
+    .status-confirmed {
+        background-color: #4CAF50;
+        color: white;
+    }
+
+    .status-pending {
+        background-color: #FFC107;
+        color: #333;
+    }
+
+    .booking-details {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 15px;
+    }
+
+    .detail-item {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .detail-label {
+        font-size: 0.9em;
+        color: #666;
+        margin-bottom: 5px;
+    }
+
+    .detail-value {
+        font-weight: 500;
+        color: #333;
+    }
+
+    .no-bookings {
+        text-align: center;
+        padding: 40px;
+        background: rgba(255, 255, 255, 0.9);
+        border-radius: 15px;
+        color: #666;
+    }
+
+    @media (max-width: 768px) {
+        .booking-details {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+<div class="history-container">
+    <h1 class="history-title">Your Booking History</h1>
+    
+    <div class="booking-cards">
+        {% if bookings %}
+            {% for booking in bookings %}
+            <div class="booking-card">
+                <div class="booking-header">
+                    <div class="monument-name">{{ booking.monument_name }}</div>
+                    <div class="booking-status {% if booking.status == 'Confirmed' %}status-confirmed{% else %}status-pending{% endif %}">
+                        {{ booking.status }}
+                    </div>
+                </div>
+                <div class="booking-details">
+                    <div class="detail-item">
+                        <span class="detail-label">Booking Date</span>
+                        <span class="detail-value">{{ booking.booking_date }}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Visit Date</span>
+                        <span class="detail-value">{{ booking.visit_date }}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Number of Visitors</span>
+                        <span class="detail-value">{{ booking.visitors }}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Total Amount</span>
+                        <span class="detail-value">₹{{ booking.total_amount }}</span>
+                    </div>
+                    {% if booking.special_requests %}
+                    <div class="detail-item">
+                        <span class="detail-label">Special Requests</span>
+                        <span class="detail-value">{{ booking.special_requests }}</span>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="no-bookings">
+                <h2>No bookings found</h2>
+                <p>You haven't made any bookings yet. Start your journey by booking a visit to one of our magnificent monuments!</p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %} 

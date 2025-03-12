@@ -1,0 +1,498 @@
+{% extends "base.html" %}
+{% block title %}Itihasa - Monumental Journeys{% endblock %}
+{% block content %}
+<style>
+  /* Video Background */
+  .video-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    z-index: -1;
+  }
+
+  .video-container video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  /* Overlay Content */
+  .content-overlay {
+    position: relative;
+    z-index: 1;
+    color: rgb(255, 255, 255);
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.5);
+  }
+
+  .content-overlay h1 {
+    font-family: 'Merienda', cursive;
+    font-size: 3rem;
+    font-weight: 700;
+    text-shadow: 2px 2px 10px rgba(255, 215, 0, 0.8);
+  }
+
+  .content-overlay p {
+    font-family: 'Poppins', sans-serif;
+    font-size: 1.2rem;
+    font-weight: 300;
+    max-width: 600px;
+  }
+
+  /* Audio Button */
+  .audio-btn {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    z-index: 10;
+  }
+
+  /* Smooth Scrolling */
+  html {
+    scroll-behavior: smooth;
+  }
+
+  /* Add Carousel Styles */
+  /* @import url("https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600&family=Roboto:wght@300;400;500&display=swap"); */
+
+  /* .carousel-section { ... } */
+  /* .swiper { ... } */
+  /* .swiper-slide { ... } */
+
+  .travel-section {
+    position: relative;
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.7);
+    overflow: hidden;
+  }
+
+  .swiper {
+    width: 100%;
+    padding-top: 50px;
+    padding-bottom: 50px;
+  }
+
+  .swiper-slide {
+    width: 300px;
+    height: 400px;
+    box-shadow: 0 15px 50px rgba(0, 0, 0, 0.2);
+    filter: blur(1px);
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: end;
+    align-items: self-start;
+  }
+
+  .swiper-slide-active {
+    filter: blur(0px);
+  }
+
+  .swiper-pagination-bullet,
+  .swiper-pagination-bullet-active {
+    background: #fff;
+  }
+
+  .swiper-slide span {
+    text-transform: uppercase;
+    color: #fff;
+    background: #1b7402;
+    padding: 7px 18px 7px 25px;
+    display: inline-block;
+    border-radius: 0 20px 20px 0px;
+    letter-spacing: 2px;
+    font-size: 0.8rem;
+    font-family: "Open Sans", sans-serif;
+  }
+
+  .swiper-slide h2 {
+    color: #fff;
+    font-family: "Roboto", sans-serif;
+    font-weight: 400;
+    font-size: 1.3rem;
+    line-height: 1.4;
+    margin-bottom: 15px;
+    padding: 25px 45px 0 25px;
+  }
+
+  .swiper-slide p {
+    color: #fff;
+    font-family: "Roboto", sans-serif;
+    font-weight: 300;
+    display: flex;
+    align-items: center;
+    padding: 0 25px 35px 25px;
+  }
+
+  .swiper-slide svg {
+    color: #fff;
+    width: 22px;
+    height: 22px;
+    margin-right: 7px;
+  }
+
+  .swiper-slide--winter {
+    background: linear-gradient(to top, #0f2027, #203a4300, #2c536400),
+      url("{{ url_for('static', filename='republic-day-parade_delhi.jpg') }}") no-repeat 50% 50% / cover;
+  }
+
+  .swiper-slide--winter1 {
+    background: linear-gradient(to top, #0f2027, #203a4300, #2c536400),
+      url("{{ url_for('static', filename='pongal.jpg') }}") no-repeat 50% 50% / cover;
+  }
+
+  .swiper-slide--spring {
+    background: linear-gradient(to top, #0f2027, #203a4300, #2c536400),
+      url("{{ url_for('static', filename='holi.jpg') }}") no-repeat 50% 50% / cover;
+  }
+
+  .swiper-slide--spring2 {
+    background: linear-gradient(to top, #0f2027, #203a4300, #2c536400),
+      url("{{ url_for('static', filename='ram mandir.jpg') }}") no-repeat 50% 50% / cover;
+  }
+
+  .swiper-slide--monsoon1 {
+    background: linear-gradient(to top, #0f2027, #203a4300, #2c536400),
+      url("{{ url_for('static', filename='India-Gate.jpg') }}") no-repeat 50% 50% / cover;
+  }
+
+  .swiper-slide--monsoon2 {
+    background: linear-gradient(to top, #0f2027, #203a4300, #2c536400),
+      url("{{ url_for('static', filename='ganesha.jpg') }}") no-repeat 50% 50% / cover;
+  }
+
+
+  .swiper-slide--autumn1 {
+    background: linear-gradient(to top, #0f2027, #203a4300, #2c536400),
+      url("{{ url_for('static', filename='aksharadam.jpg') }}") no-repeat 50% 50% / cover;
+  }
+
+  .swiper-slide--diwali {
+    background: linear-gradient(to top, #0f2027, #203a4300, #2c536400),
+      url("{{ url_for('static', filename='red fort.jpg') }}") no-repeat 50% 50% / cover;
+  }
+
+  .swiper-slide--christmas {
+    background: linear-gradient(to top, #0f2027, #203a4300, #2c536400),
+      url("{{ url_for('static', filename='christ.jpeg') }}") no-repeat 50% 50% / cover;
+  }
+
+  /* Add seasonal color themes */
+  .swiper-slide--winter span { background: #2196F3; }
+  .swiper-slide--spring span { background: #4CAF50; }
+  .swiper-slide--spring2 span { background: #8BC34A; }
+  .swiper-slide--monsoon span { background: #009688; }
+  .swiper-slide--autumn span { background: #FF5722; }
+  .swiper-slide--diwali span { background: #FFC107; }
+  .swiper-slide--christmas span { background: #E91E63; }
+</style>
+
+<!-- Background Video -->
+<div class="video-container">
+  <video autoplay muted loop playsinline>
+    <source src="{{ url_for('static', filename='pl1.mp4') }}" type="video/mp4" />
+    Your browser does not support the video tag.
+  </video>
+</div>
+
+<!-- Audio Toggle Button (Bottom Left) -->
+<button id="audio-btn" class="audio-btn" onclick="toggleAudio()">
+  <img id="audio-icon" src="{{ url_for('static', filename='sound.png') }}" alt="Toggle Audio" width="50px" height="50px">
+</button>
+
+<audio id="bg-audio" loop>
+  <source src="{{ url_for('static', filename='pl1.mp3') }}" type="audio/mpeg">
+</audio>
+
+<!-- Overlay Content -->
+<div class="content-overlay">
+  <h1>Itihasa: Monumental Journeys</h1>
+  <p>Explore the epic tales and historic monuments that define India's rich heritage.</p>
+  <a href="{{ url_for('views.place') }}" class="btn btn-primary btn-lg mt-3">Discover Historic Sites</a>
+</div>
+
+<!-- Add this section after the content-overlay div -->
+<section class="travel-section">
+  <div class="swiper">
+    <div class="swiper-wrapper">
+      <!-- January Festivals -->
+      <div class="swiper-slide swiper-slide--winter1">
+        <span>Winter Festival</span>
+        <div>
+          <h2>Sankranti & Pongal Special</h2>
+          <p>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />
+              <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" />
+            </svg>
+            Tamil Nadu & Gujarat
+          </p>
+        </div>
+      </div>
+      
+      <div class="swiper-slide swiper-slide--monsoon1">
+        <span>Monsoon Festival</span>
+        <div>
+          <h2>Independence Day Special</h2>
+          <p>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />
+              <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" />
+            </svg>
+            Delhi & Agra
+          </p>
+        </div>
+      </div>
+
+      <div class="swiper-slide swiper-slide--winter">
+        <span>Winter Festival</span>
+        <div>
+          <h2>Republic Day Special</h2>
+          <p>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />
+              <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" />
+            </svg>
+            Delhi & Agra
+          </p>
+        </div>
+      </div>
+
+      <!-- March Festivals -->
+      <div class="swiper-slide swiper-slide--spring">
+        <span>Spring Festival</span>
+        <div>
+          <h2>Holi Special</h2>
+          <p>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />
+              <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" />
+            </svg>
+            Jaipur & Hampi
+          </p>
+        </div>
+      </div>
+
+      <!-- April Festivals -->
+      <div class="swiper-slide swiper-slide--spring2">
+        <span>Spring Special</span>
+        <div>
+          <h2>Ram Navami & Baisakhi</h2>
+          <p>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />
+              <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" />
+            </svg>
+            Ajanta & Sanchi
+          </p>
+        </div>
+      </div>
+
+      <!-- August Festivals -->
+      <div class="swiper-slide swiper-slide--monsoon2">
+        <span>Monsoon Festival</span>
+        <div>
+          <h2>Ganesh Chaturthi Special</h2>
+          <p>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />
+              <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" />
+            </svg>
+            Mumbai 
+          </p>
+        </div>
+      </div>
+
+      <!-- October Festivals -->
+      <div class="swiper-slide swiper-slide--autumn1">
+        <span>Autumn Festival</span>
+        <div>
+          <h2>Navratri & Durga Puja</h2>
+          <p>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />
+              <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" />
+            </svg>
+            Ahmedabad & Hampi
+          </p>
+        </div>
+      </div>
+
+      <!-- Diwali Special -->
+      <div class="swiper-slide swiper-slide--diwali">
+        <span>Diwali Special</span>
+        <div>
+          <h2>Festival of Lights Tour</h2>
+          <p>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />
+              <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" />
+            </svg>
+            Taj Mahal & Red Fort
+          </p>
+        </div>
+      </div>
+
+      <!-- December Festivals -->
+      <div class="swiper-slide swiper-slide--christmas">
+        <span>Winter Special</span>
+        <div>
+          <h2>Christmas & New Year</h2>
+          <p>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />
+              <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" />
+            </svg>
+            Goa & Mumbai
+          </p>
+        </div>
+      </div>
+    </div>
+    <div class="swiper-pagination"></div>
+  </div>
+</section>
+
+<!-- JavaScript for Audio Toggle -->
+ <script>
+document.addEventListener("DOMContentLoaded", function () {
+    const cards = document.querySelectorAll(".banner .slider .item");
+
+    cards.forEach(card => {
+        card.addEventListener("click", function () {
+            // Add clicked effect
+            this.classList.add("clicked");
+
+            // Set the target URL correctly
+            let targetUrl = "/index"; // Ensure the path is correct
+
+            // Wait for the animation to complete, then navigate
+            setTimeout(() => {
+                window.location.href = targetUrl;
+            }, 500);
+        });
+    });
+});
+
+
+  function toggleAudio() {
+    let audio = document.getElementById('bg-audio');
+    let icon = document.getElementById('audio-icon');
+
+    if (audio.paused) {
+      audio.play();
+      icon.src = "{{ url_for('static', filename='sound1.png') }}"; // Change to mute icon
+    } else {
+      audio.pause();
+      icon.src = "{{ url_for('static', filename='sound.png') }}"; // Change back to play icon
+    }
+  }
+</script>
+
+<!-- Chat Widget -->
+<div id="chat-widget" style="position: fixed; bottom: 20px; right: 20px; width: 300px; z-index: 1000;">
+    <div style="background: rgba(0, 0, 0, 0.8); border-radius: 10px; padding: 15px;">
+        <div id="chat-messages" style="height: 300px; overflow-y: auto; margin-bottom: 10px; color: white;">
+        </div>
+        <div style="display: flex;">
+            <input type="text" id="user-input" placeholder="Type your message..." 
+                   style="flex: 1; padding: 8px; border-radius: 5px; margin-right: 5px;">
+            <button onclick="sendMessage()" style="padding: 8px 15px; border-radius: 5px; background: #007bff; color: white; border: none;">Send</button>
+        </div>
+    </div>
+</div>
+
+<script>
+function sendMessage() {
+    const input = document.getElementById('user-input');
+    const message = input.value.trim();
+    if (!message) return;
+
+    // Add user message to chat
+    addMessage('You: ' + message);
+    input.value = '';
+
+    // Send to server
+    fetch('/chatbot/chat', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ message: message })
+    })
+    .then(response => response.json())
+    .then(data => {
+        addMessage('Bot: ' + data.response);
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        addMessage('Bot: Sorry, there was an error processing your request.');
+    });
+}
+
+function addMessage(message) {
+    const chatMessages = document.getElementById('chat-messages');
+    const messageElement = document.createElement('div');
+    messageElement.style.marginBottom = '10px';
+    messageElement.textContent = message;
+    chatMessages.appendChild(messageElement);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+
+// Allow Enter key to send message
+document.getElementById('user-input').addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+        sendMessage();
+    }
+});
+</script>
+
+<!-- Add this script section before the closing body tag -->
+<script src='https://cdnjs.cloudflare.com/ajax/libs/Swiper/8.4.5/swiper-bundle.min.js'></script>
+<script>
+  var swiper = new Swiper(".swiper", {
+    effect: "coverflow",
+    grabCursor: true,
+    centeredSlides: true,
+    slidesPerView: "auto",
+    coverflowEffect: {
+      rotate: 0,
+      stretch: 0,
+      depth: 100,
+      modifier: 2,
+      slideShadows: true
+    },
+    keyboard: {
+      enabled: true
+    },
+    mousewheel: {
+      thresholdDelta: 70
+    },
+    spaceBetween: 60,
+    loop: true,
+    pagination: {
+      el: ".swiper-pagination",
+      clickable: true
+    },
+    autoplay: {
+      delay: 3000,
+      disableOnInteraction: false,
+    }
+  });
+</script>
+
+{% endblock %}

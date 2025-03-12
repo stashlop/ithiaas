@@ -1,0 +1,379 @@
+{% extends "base.html" %}
+{% block title %}Book Your Visit - Itihasa{% endblock %}
+{% block content %}
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+    .booking-container {
+        max-width: 800px;
+        margin: 40px auto;
+        padding: 20px;
+        background: rgba(255, 255, 255, 0.9);
+        border-radius: 15px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        color: #333;
+        font-family: 'Poppins', sans-serif;
+    }
+
+    .booking-title {
+        text-align: center;
+        color: #f1683a;
+        font-size: 2.5em;
+        margin-bottom: 30px;
+    }
+
+    .booking-form {
+        display: grid;
+        gap: 20px;
+    }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .form-group label {
+        font-weight: 500;
+        color: #444;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+        padding: 12px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        font-size: 16px;
+        font-family: 'Poppins', sans-serif;
+    }
+
+    .form-group textarea {
+        resize: vertical;
+        min-height: 100px;
+    }
+
+    .submit-btn {
+        background-color: #f1683a;
+        color: white;
+        padding: 15px 30px;
+        border: none;
+        border-radius: 8px;
+        font-size: 18px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background-color 0.3s;
+        margin-top: 20px;
+    }
+
+    .submit-btn:hover {
+        background-color: #e45728;
+    }
+
+    .price-info {
+        margin-top: 20px;
+        padding: 15px;
+        background-color: #f8f8f8;
+        border-radius: 8px;
+        text-align: center;
+    }
+
+    .error-message {
+        color: #ff4444;
+        font-size: 14px;
+        margin-top: 5px;
+    }
+
+    /* Chat Widget Styles */
+    .chat-widget {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        width: 350px;
+        height: 500px;
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        z-index: 1000;
+        transition: transform 0.3s ease;
+        transform: translateY(440px);
+    }
+
+    .chat-widget.open {
+        transform: translateY(0);
+    }
+
+    .chat-header {
+        background: #f1683a;
+        color: white;
+        padding: 15px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        cursor: pointer;
+    }
+
+    .chat-header h3 {
+        margin: 0;
+        font-size: 16px;
+    }
+
+    .chat-messages {
+        flex: 1;
+        padding: 15px;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .message {
+        max-width: 80%;
+        padding: 10px 15px;
+        border-radius: 15px;
+        margin: 5px 0;
+    }
+
+    .bot-message {
+        background: #f0f0f0;
+        align-self: flex-start;
+        border-bottom-left-radius: 5px;
+    }
+
+    .user-message {
+        background: #f1683a;
+        color: white;
+        align-self: flex-end;
+        border-bottom-right-radius: 5px;
+    }
+
+    .chat-input {
+        padding: 15px;
+        border-top: 1px solid #eee;
+        display: flex;
+        gap: 10px;
+    }
+
+    .chat-input input {
+        flex: 1;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 20px;
+        outline: none;
+    }
+
+    .chat-input button {
+        background: #f1683a;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 20px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+
+    .chat-input button:hover {
+        background: #e45728;
+    }
+</style>
+
+<div class="booking-container">
+    <h1 class="booking-title">Book Your Visit</h1>
+    <form class="booking-form" method="POST" action="{{ url_for('views.book_visit') }}">
+        <div class="form-group">
+            <label for="monument">Select Monument</label>
+            <select id="monument" name="monument" required>
+                <option value="">Choose a monument...</option>
+                <option value="taj_mahal">Taj Mahal, Agra</option>
+                <option value="khajuraho">Khajuraho Temples, Madhya Pradesh</option>
+                <option value="hampi">Hampi Ruins, Karnataka</option>
+                <option value="ellora">Ellora Caves, Maharashtra</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="visit_date">Visit Date</label>
+            <input type="date" id="visit_date" name="visit_date" required min="{{ today_date }}">
+        </div>
+
+        <div class="form-group">
+            <label for="visitors">Number of Visitors</label>
+            <input type="number" id="visitors" name="visitors" required min="1" max="10">
+        </div>
+
+        <div class="form-group">
+            <label for="name">Full Name</label>
+            <input type="text" id="name" name="name" required>
+        </div>
+
+        <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" required>
+        </div>
+
+        <div class="form-group">
+            <label for="phone">Phone Number</label>
+            <input type="tel" id="phone" name="phone" required>
+        </div>
+
+        <div class="form-group">
+            <label for="special_requests">Special Requests (Optional)</label>
+            <textarea id="special_requests" name="special_requests"></textarea>
+        </div>
+
+        <div class="price-info">
+            <p>Base price per person: ₹1500</p>
+            <p>Additional charges may apply based on the monument and date selected</p>
+        </div>
+
+        <button type="submit" class="submit-btn">Book Now</button>
+    </form>
+</div>
+
+<!-- Chat Widget -->
+<div class="chat-widget">
+    <div class="chat-header">
+        <h3><i class="fas fa-robot"></i> Booking Assistant</h3>
+        <span class="toggle-chat"><i class="fas fa-chevron-up"></i></span>
+    </div>
+    <div class="chat-messages">
+        <div class="message bot-message">
+            Hello! How can I help you with your booking today?
+        </div>
+    </div>
+    <div class="chat-input">
+        <input type="text" placeholder="Type your message..." id="chat-input-field">
+        <button id="send-message">Send</button>
+    </div>
+</div>
+
+<script>
+    // Set minimum date to today
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('visit_date').min = today;
+
+    // Form validation
+    document.querySelector('.booking-form').addEventListener('submit', function(e) {
+        const visitDate = new Date(document.getElementById('visit_date').value);
+        const today = new Date();
+        
+        if (visitDate < today) {
+            e.preventDefault();
+            alert('Please select a future date for your visit.');
+        }
+    });
+
+    // Chat Widget Script
+    document.addEventListener('DOMContentLoaded', function() {
+        const chatWidget = document.querySelector('.chat-widget');
+        const chatHeader = document.querySelector('.chat-header');
+        const chatMessages = document.querySelector('.chat-messages');
+        const chatInput = document.getElementById('chat-input-field');
+        const sendButton = document.getElementById('send-message');
+        const toggleIcon = document.querySelector('.toggle-chat i');
+
+        // Toggle chat widget
+        chatHeader.addEventListener('click', () => {
+            chatWidget.classList.toggle('open');
+            toggleIcon.classList.toggle('fa-chevron-up');
+            toggleIcon.classList.toggle('fa-chevron-down');
+        });
+
+        // Send message function
+        function sendMessage() {
+            const message = chatInput.value.trim();
+            if (!message) return;
+
+            // Add user message to chat
+            addMessage(message, 'user');
+
+            // Send to chatbot API
+            fetch('/chat', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ message: message })
+            })
+            .then(response => response.json())
+            .then(data => {
+                addMessage(data.response, 'bot');
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                addMessage('Sorry, I encountered an error. Please try again.', 'bot');
+            });
+
+            chatInput.value = '';
+        }
+
+        // Add message to chat
+        function addMessage(text, sender) {
+            const messageDiv = document.createElement('div');
+            messageDiv.classList.add('message', `${sender}-message`);
+            messageDiv.textContent = text;
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+
+            // If booking was successful, add a link to booking history
+            if (sender === 'bot' && text.includes("I've created your booking")) {
+                const linkDiv = document.createElement('div');
+                linkDiv.classList.add('message', 'bot-message');
+                const link = document.createElement('a');
+                link.href = '/booking-history';
+                link.textContent = 'View Your Booking History';
+                link.style.color = '#f1683a';
+                link.style.textDecoration = 'underline';
+                linkDiv.appendChild(link);
+                chatMessages.appendChild(linkDiv);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }
+        }
+
+        // Event listeners
+        sendButton.addEventListener('click', sendMessage);
+        chatInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+
+        // Add suggestions for booking
+        const suggestions = [
+            "I want to book tickets for Taj Mahal",
+            "Book 2 tickets for Khajuraho on 2024-03-25",
+            "How much does it cost to visit Hampi?",
+            "What are the visiting hours for Ellora Caves?"
+        ];
+
+        const suggestionsDiv = document.createElement('div');
+        suggestionsDiv.classList.add('chat-suggestions');
+        suggestionsDiv.style.padding = '10px 15px';
+        suggestionsDiv.style.borderTop = '1px solid #eee';
+        suggestionsDiv.innerHTML = `
+            <div style="font-size: 12px; color: #666; margin-bottom: 5px;">Suggested messages:</div>
+            <div style="display: flex; flex-wrap: wrap; gap: 5px;">
+                ${suggestions.map(s => `
+                    <button style="
+                        background: #f8f8f8;
+                        border: 1px solid #ddd;
+                        border-radius: 15px;
+                        padding: 5px 10px;
+                        font-size: 12px;
+                        cursor: pointer;
+                        transition: all 0.3s;
+                    "
+                    onmouseover="this.style.background='#f1683a'; this.style.color='white'; this.style.borderColor='#f1683a'"
+                    onmouseout="this.style.background='#f8f8f8'; this.style.color='#333'; this.style.borderColor='#ddd'"
+                    onclick="document.getElementById('chat-input-field').value='${s}'; this.closest('.chat-widget').querySelector('#send-message').click();"
+                    >${s}</button>
+                `).join('')}
+            </div>
+        `;
+        document.querySelector('.chat-input').before(suggestionsDiv);
+    });
+</script>
+{% endblock %} 
