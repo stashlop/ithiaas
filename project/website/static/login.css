@@ -1,0 +1,111 @@
+/* Background Video */
+.bg-video {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: -1;
+}
+
+/* Center and style the container */
+.container {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start; /* Move the form container up */
+    min-height: 100vh;
+    padding-top: 30px; /* Adjust top spacing */
+}
+
+/* Make the form container smaller and transparent */
+.form-container {
+    background: rgba(255, 255, 255, 0.7); /* Semi-transparent background */
+    padding: 30px;
+    width: 350px; /* Set width to make the box smaller */
+    border-radius: 15px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+    text-align: center;
+    position: relative;
+    z-index: 1;
+}
+
+
+/* Form Heading */
+h1 {
+    font-family: 'Rajdhani', sans-serif;
+    color: #333;
+    margin-bottom: 20px;
+    font-size: 2em;
+}
+
+/* Form Inputs and Buttons */
+.form-group {
+    margin-bottom: 25px;
+    position: relative;
+}
+
+input {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #ddd;
+    border-radius: 10px;
+    font-size: 1em;
+    background: rgba(255, 255, 255, 0.9);
+    transition: all 0.3s ease;
+}
+
+input:focus {
+    border-color: #ff5733; /* Accent color */
+    outline: none;
+    box-shadow: 0 0 15px rgba(255, 87, 51, 0.2);
+}
+
+/* Floating label effect */
+.form-group label {
+    position: absolute;
+    left: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: white;
+    padding: 0 5px;
+    color: #666;
+    transition: all 0.3s ease;
+}
+
+.form-group input:focus + label,
+.form-group input:not(:placeholder-shown) + label {
+    top: 0;
+    font-size: 0.85em;
+    color: #ff5733; /* Accent color */
+}
+
+.btn {
+    width: 100%;
+    padding: 12px;
+    background: linear-gradient(135deg, #ff5733, #ffc300);
+    border: none;
+    border-radius: 10px;
+    color: white;
+    font-size: 1.1em;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.register-link {
+    margin-top: 25px;
+    color: #666;
+    font-size: 0.95em;
+}
+
+.register-link a {
+    color: #ff5733;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.register-link a:hover {
+    text-decoration: underline;
+}
